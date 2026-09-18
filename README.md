@@ -1,45 +1,61 @@
-Overview
-========
+# Credit Risk ML Pipeline
 
-Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
+An end-to-end credit risk pipeline: synthetic loan data through Airflow, cleaned and feature-engineered in dbt, modeled with XGBoost/Logistic Regression + SHAP, evaluated in dollar terms, monitored for drift, and served via FastAPI.
 
-Project Contents
-================
+Built to show the infrastructure around a model, not just the model.
 
-Your Astro project contains the following files and folders:
+## Pipeline
 
-- dags: This folder contains the Python files for your Airflow DAGs. By default, this directory includes one example DAG:
-    - `example_astronauts`: This DAG shows a simple ETL pipeline example that queries the list of astronauts currently in space from the Open Notify API and prints a statement for each astronaut. The DAG uses the TaskFlow API to define tasks in Python, and dynamic task mapping to dynamically print a statement for each astronaut. For more on how this DAG works, see our [Getting started tutorial](https://www.astronomer.io/docs/learn/get-started-with-airflow).
-- Dockerfile: This file contains a versioned Astro Runtime Docker image that provides a differentiated Airflow experience. If you want to execute other commands or overrides at runtime, specify them here.
-- include: This folder contains any additional files that you want to include as part of your project. It is empty by default.
-- packages.txt: Install OS-level packages needed for your project by adding them to this file. It is empty by default.
-- requirements.txt: Install Python packages needed for your project by adding them to this file. It is empty by default.
-- plugins: Add custom or community plugins for your project to this file. It is empty by default.
-- airflow_settings.yaml: Use this local-only file to specify Airflow Connections, Variables, and Pools instead of entering them in the Airflow UI as you develop DAGs in this project.
+```
+raw data -> Airflow (ingest + validate) -> dbt (staging -> features -> mart)
+   -> model training (LogReg + XGBoost + SHAP)
+   -> financial impact + drift monitoring
+   -> FastAPI (Docker)
+```
 
-Deploy Your Project Locally
-===========================
+## Results
 
-Start Airflow on your local machine by running 'astro dev start'.
+- XGBoost: ROC-AUC 0.67, PR-AUC 0.13
+- Logistic Regression: ROC-AUC 0.71, PR-AUC 0.19
+- At a 0.5 threshold: 39% less bad debt vs. approving everyone, 77% of good customers still approved
+- Drift check flags a simulated downturn (utilization PSI 0.66), stays quiet where nothing changed (credit score PSI 0.0)
 
-This command will spin up five Docker containers on your machine, each for a different Airflow component:
+Numbers are on synthetic data — read as "pipeline works correctly," not "production-ready."
 
-- Postgres: Airflow's Metadata Database
-- Scheduler: The Airflow component responsible for monitoring and triggering tasks
-- DAG Processor: The Airflow component responsible for parsing DAGs
-- API Server: The Airflow component responsible for serving the Airflow UI and API
-- Triggerer: The Airflow component responsible for triggering deferred tasks
+## Live demo
 
-When all five containers are ready the command will open the browser to the Airflow UI at http://localhost:8080/. You should also be able to access your Postgres Database at 'localhost:5432/postgres' with username 'postgres' and password 'postgres'.
+[link here once deployed on Render]
 
-Note: If you already have either of the above ports allocated, you can either [stop your existing Docker containers or change the port](https://www.astronomer.io/docs/astro/cli/troubleshoot-locally#ports-are-not-available-for-my-local-airflow-webserver).
+## Structure
 
-Deploy Your Project to Astronomer
-=================================
+```
+dags/                   Airflow DAG - fetch, validate, trigger dbt
+include/dbt_project/    dbt models (staging -> intermediate -> marts)
+ml/                      training + financial evaluation
+monitoring/              drift detection (Evidently)
+api/                     FastAPI app + Dockerfile
+data/                    synthetic data generator
+```
 
-If you have an Astronomer account, pushing code to a Deployment on Astronomer is simple. For deploying instructions, refer to Astronomer documentation: https://www.astronomer.io/docs/astro/deploy-code/
+## Running it
 
-Contact
-=======
+```
+astro dev start                        # Airflow + dbt, localhost:8080
+python3 ml/train_model.py
+python3 ml/financial_evaluation.py
+python3 monitoring/drift_check.py
+docker build -f api/Dockerfile -t credit-risk-api .
+docker run -p 8000:8000 credit-risk-api    # localhost:8000
+```
 
-The Astronomer CLI is maintained with love by the Astronomer team. To report a bug or suggest a change, reach out to our support.
+## Notes for anyone reviewing this
+
+- Used DuckDB instead of Postgres/Snowflake for local dev
+- The synthetic data keeps default outcomes fairly noisy on purpose. Real credit models typically land around 0.65-0.75 AUC too
+- Decision threshold is 0.5, just a placeholder. Not tuned to real cost trade-offs
+- Great Expectations checks currently just log problems instead of stopping the pipeline
+- Logistic Regression throws overflow warnings from a few outlier rows in the raw data. Suppressed, not fixed
+
+## Stack
+
+Airflow (Astro CLI) · dbt + DuckDB · Great Expectations · scikit-learn · XGBoost · SHAP · Evidently · FastAPI · Docker
