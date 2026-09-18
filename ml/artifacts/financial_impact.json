@@ -1,0 +1,19 @@
+{
+  "assumptions": {
+    "threshold": 0.5,
+    "loss_given_default": 0.6,
+    "profit_margin": 0.08
+  },
+  "dollar_confusion_matrix": {
+    "false_positive_cost_defaults_approved": 794298.13,
+    "false_negative_cost_good_customers_rejected": 611358.8,
+    "true_positive_loss_avoided": 508401.59,
+    "true_negative_profit_earned": 2035339.63
+  },
+  "business_impact": {
+    "baseline_bad_debt_no_model": 1302699.72,
+    "bad_debt_with_model": 794298.13,
+    "bad_debt_reduction_pct": 39.0,
+    "profitable_borrowers_retained_pct": 76.7
+  }
+}

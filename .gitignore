@@ -1,0 +1,33 @@
+.git
+.env
+.DS_Store
+airflow_settings.yaml
+__pycache__/
+astro
+.venv
+.astro/standalone/
+.astro/worktrees/
+airflow-webserver.pid
+webserver_config.py
+airflow.cfg
+airflow.db
+.astro/*.local.yml
+.astro/*.local.yaml
+
+**/.astro/dbt_metadata.json
+**/.astro/manifest.slim.json
+# Python
+__pycache__/
+*.pyc
+dbt-venv/
+venv/
+
+# dbt
+include/dbt_project/dev.duckdb
+include/dbt_project/target/
+include/dbt_project/logs/
+include/dbt_project/dbt_packages/
+include/dbt_project/package-lock.yml
+
+# OS
+.DS_Store

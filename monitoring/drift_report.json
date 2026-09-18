@@ -1,0 +1,22 @@
+{
+  "psi_alert_threshold": 0.2,
+  "columns": {
+    "debt_to_income_ratio": {
+      "psi": 0.0599,
+      "breached": false
+    },
+    "annual_income": {
+      "psi": 0.1275,
+      "breached": false
+    },
+    "utilization_3mo_avg": {
+      "psi": 0.6579,
+      "breached": true
+    },
+    "credit_score": {
+      "psi": 0.0,
+      "breached": false
+    }
+  },
+  "retrain_recommended": true
+}
