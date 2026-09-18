@@ -20,11 +20,6 @@ raw data -> Airflow (ingest + validate) -> dbt (staging -> features -> mart)
 - At a 0.5 threshold: 39% less bad debt vs. approving everyone, 77% of good customers still approved
 - Drift check flags a simulated downturn (utilization PSI 0.66), stays quiet where nothing changed (credit score PSI 0.0)
 
-Numbers are on synthetic data — read as "pipeline works correctly," not "production-ready."
-
-## Live demo
-
-[link here once deployed on Render]
 
 ## Structure
 
