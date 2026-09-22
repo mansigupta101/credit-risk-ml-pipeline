@@ -31,3 +31,4 @@ include/dbt_project/package-lock.yml
 
 # OS
 .DS_Store
+README_astro_CLI.md
