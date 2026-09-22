@@ -53,7 +53,7 @@ Lenders need to decide whether to approve a loan application. This project build
 
 ## Results
 
-![Model performance](ml/artifacts/metrics_comparison_side_by_side.png)
+![Model performance](ml/artifacts/Brach_Discriminatory_Metrics_comparison.png)
 
 - Logistic Regression: ROC-AUC 0.71, Gini 0.42, PR-AUC 0.19
 - XGBoost: ROC-AUC 0.68, Gini 0.35, PR-AUC 0.15
@@ -69,7 +69,7 @@ Results are on synthetic data. They validate the pipeline end to end, not real-w
 
 `main` trains on the natural class distribution. An earlier version used class reweighting (`class_weight="balanced"`, `scale_pos_weight`) to handle the ~6% default rate, kept on the [`class-weighted-version`](../../tree/class-weighted-version) branch for comparison.
 
-![Branch comparison](ml/artifacts/branch_comparison.gif)
+![Branch comparison](ml/artifacts/Branch_Calib_SHAP_Comparison.gif)
 
 Reweighting did not improve discrimination and degraded calibration. `main` reflects the better-performing approach.
 
@@ -118,12 +118,6 @@ pip install dbt-core dbt-duckdb great_expectations scikit-learn xgboost shap evi
    ```bash
    pytest tests/unit/ -v
    ```
-
----
-
-## Live Demo
-
-[link here once deployed on Render]
 
 ---
 
