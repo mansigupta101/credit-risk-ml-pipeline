@@ -1,4 +1,4 @@
-# Credit Risk Modelling -- PD Scorecard & ML Pipeline
+# Credit Risk Modelling - PD Scorecard & ML Pipeline
 
 An end-to-end credit risk pipeline: data ingestion, feature engineering, model training, and deployment.
 
