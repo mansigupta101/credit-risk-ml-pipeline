@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pytest httpx fastapi pandas scikit-learn xgboost joblib duckdb
+          pip install pytest httpx fastapi pandas scikit-learn xgboost joblib duckdb shap matplotlib
 
       - name: Set up dbt and build tables
         run: |
